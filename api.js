@@ -11,19 +11,24 @@ const port = 3000;
 const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
 
 admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount)
+  credential: admin.credential.cert(serviceAccount)
 });
 
 const db = admin.firestore();
 
-// Export db so route files can use it
-module.exports = { db };
+// Set up Express app
+const app = express();
+const port = process.env.PORT || 3000;
+
+// Middleware to parse JSON bodies
+app.use(express.json());
+app.use(cors());
 
 // Middleware to parse JSON bodies (increased limit for base64 images)
 app.use(express.json({ limit: '50mb' }));
 
 // Serve static files from the 'web' directory
-app.use(express.static(path.join(__dirname, 'web')));
+//app.use(express.static(path.join(__dirname, 'web')));
 
 // Import Routers
 const shopAuthRoutes = require('./pages/shopAuth');
@@ -41,4 +46,5 @@ app.use('/api/public', productDetailsRoutes);
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
 });
+
 
