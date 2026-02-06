@@ -3,7 +3,7 @@ const path = require('path');
 const admin = require('firebase-admin');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
-const cors = require('cors')
+
 
 // You need to put your serviceAccountKey.json in the same folder as api.js
 //const serviceAccount = require("./serviceAccountKey.json");
@@ -21,7 +21,6 @@ const port = process.env.PORT || 3000;
 
 // Middleware to parse JSON bodies
 app.use(express.json());
-app.use(cors());
 
 // Middleware to parse JSON bodies (increased limit for base64 images)
 app.use(express.json({ limit: '50mb' }));
@@ -45,6 +44,7 @@ app.use('/api/public', productDetailsRoutes);
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
 });
+
 
 
 
