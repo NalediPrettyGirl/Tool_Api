@@ -1,7 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const express = require('express');
-const router = express.Router();
 const { db } = require('../firebase');
 
 // Add Business Endpoint
@@ -82,3 +80,4 @@ router.get('/businesses/check/:email', async (req, res) => {
 
 
 module.exports = router;
+
