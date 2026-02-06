@@ -7,7 +7,8 @@ const app = express();
 const port = 3000;
 
 // You need to put your serviceAccountKey.json in the same folder as api.js
-const serviceAccount = require("./serviceAccountKey.json");
+//const serviceAccount = require("./serviceAccountKey.json");
+const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
 
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount)
@@ -40,3 +41,4 @@ app.use('/api/public', productDetailsRoutes);
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
 });
+
