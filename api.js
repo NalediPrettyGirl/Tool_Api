@@ -6,6 +6,11 @@ const path = require('path');
 // You need to put your serviceAccountKey.json in the same folder as api.js
 //const serviceAccount = require("./serviceAccountKey.json");
 const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+if (!process.env.FIREBASE_SERVICE_ACCOUNT) {
+  throw new Error('FIREBASE_SERVICE_ACCOUNT env variable is missing');
+}
+
+const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
@@ -19,12 +24,8 @@ const port = process.env.PORT || 3000;
 // Middleware to parse JSON bodies
 app.use(express.json());
 app.use(cors());
-
-// Middleware to parse JSON bodies (increased limit for base64 images)
 app.use(express.json({ limit: '50mb' }));
-// Middleware to parse JSON bodies
-app.use(express.json());
-app.use(cors());
+
 // Serve static files from the 'web' directory
 //app.use(express.static(path.join(__dirname, 'web')));
 
@@ -44,3 +45,4 @@ app.use('/api/public', productDetailsRoutes);
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
 });
+
