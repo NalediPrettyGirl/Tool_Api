@@ -3,8 +3,7 @@ const path = require('path');
 const admin = require('firebase-admin');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
-const app = express();
-const port = 3000;
+const cors = require('cors')
 
 // You need to put your serviceAccountKey.json in the same folder as api.js
 //const serviceAccount = require("./serviceAccountKey.json");
@@ -46,5 +45,6 @@ app.use('/api/public', productDetailsRoutes);
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
 });
+
 
 
