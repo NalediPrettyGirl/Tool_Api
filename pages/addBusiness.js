@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-
-const { db } = require('../api');
-
+const express = require('express');
+const router = express.Router();
+const { db } = require('../firebase');
 
 // Add Business Endpoint
 // POST /api/businesses
@@ -79,5 +79,6 @@ router.get('/businesses/check/:email', async (req, res) => {
         res.status(500).json({ message: 'Error checking business' });
     }
 });
+
 
 module.exports = router;
