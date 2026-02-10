@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const { db } = require('../firebase');
+
+const { db } = require('../api');
+
 
 // Add Business Endpoint
 // POST /api/businesses
@@ -78,6 +80,4 @@ router.get('/businesses/check/:email', async (req, res) => {
     }
 });
 
-
 module.exports = router;
-
