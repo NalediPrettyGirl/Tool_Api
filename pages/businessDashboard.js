@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
-
-const { db } = require('../api');
+const { db } = require('../database');
 
 // Get business by owner email
 // GET /api/dashboard/business/:email

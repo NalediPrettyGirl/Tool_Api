@@ -1,8 +1,6 @@
 const express = require('express');
 const router = express.Router();
-
-const { db } = require('../api');
-
+const { db } = require('../database');
 
 // Add Business Endpoint
 // POST /api/businesses

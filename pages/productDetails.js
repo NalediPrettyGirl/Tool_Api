@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
-
-const { db } = require('../api');
+const { db } = require('../database');
 
 // Get business details by ID (public view)
 // GET /api/public/business/:id
@@ -31,7 +30,7 @@ router.get('/products/:businessId', async (req, res) => {
         const businessId = req.params.businessId;
         const snapshot = await db.collection('products')
             .where('businessId', '==', businessId)
-            .where('status', '==', 'active')
+            // .where('status', '==', 'active') // Temporary comment out for debugging if needed
             .get();
 
         const products = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
