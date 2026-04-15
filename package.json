@@ -1,20 +1,20 @@
 {
-  "name": "asera-local-hub",
-  "version": "1.0.0",
-  "description": "Local Business Hub",
-  "main": "Tool_Api/api.js",
-  "scripts": {
-    "start": "node Tool_Api/api.js",
-    "dev": "nodemon Tool_Api/api.js"
-  },
-  "dependencies": {
-    "cookie-parser": "^1.4.7",
-    "cors": "^2.8.5",
-    "express": "^5.2.1",
-    "express-session": "^1.19.0",
-    "firebase-admin": "^13.6.1"
-  },
-  "devDependencies": {
-    "nodemon": "^3.1.0"
-  }
+    "name": "toolbox-api",
+    "version": "1.0.0",
+    "description": "API for Toolbox ecosystem",
+    "main": "api.js",
+    "scripts": {
+        "start": "node api.js",
+        "dev": "nodemon api.js"
+    },
+    "dependencies": {
+        "cookie-parser": "^1.4.7",
+        "cors": "^2.8.5",
+        "express": "^5.2.1",
+        "express-session": "^1.19.0",
+        "firebase-admin": "^13.6.1"
+    },
+    "devDependencies": {
+        "nodemon": "^3.1.0"
+    }
 }
