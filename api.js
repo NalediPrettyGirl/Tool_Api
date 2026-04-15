@@ -11,22 +11,37 @@ const port = process.env.PORT || 3000;
 require('./database');
 
 // 2. Middleware
-app.use(cors());
+app.use(cors({
+    origin: true,
+    credentials: true
+}));
 app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 app.use(cookieParser());
+app.use(session({
+    name: 'asera_session',
+    secret: 'your-secret-key', // Change this in production
+    resave: true,
+    saveUninitialized: true,
+    cookie: { 
+        secure: true, // Set to true on Render (HTTPS)
+        sameSite: 'none', // Required for cross-site cookies
+        maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    }
+}));
 
-// 3. Request Logger (Helpful for debugging hosted apps)
+// 3. Request Logger
 app.use((req, res, next) => {
   console.log(`[${new Date().toLocaleTimeString()}] ${req.method} ${req.url}`);
   next();
 });
 
 // 4. Mount API Routes
-// We mount them exactly as needed by the frontend
 app.use('/api', require('./pages/shopAuth'));
 app.use('/api', require('./pages/addBusiness'));
 app.use('/api/dashboard', require('./pages/businessDashboard'));
 app.use('/api/public', require('./pages/productDetails'));
+// app.use('/api/admin', require('./pages/admin')); // Add if exists
 
 // 5. Health Check
 app.get('/health-check', (req, res) => {
