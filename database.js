@@ -6,7 +6,7 @@ try {
     if (process.env.FIREBASE_SERVICE_ACCOUNT_KEY) {
         serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY);
     } else {
-        serviceAccount = require("./serviceAccountKey.json");
+        serviceAccount = require("./seviceaccountkey.json");
     }
 } catch (error) {
     console.error("Error loading service account key:", error.message);

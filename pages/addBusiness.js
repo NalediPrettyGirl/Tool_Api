@@ -7,7 +7,7 @@ const { db } = require('../database');
 router.post('/businesses', async (req, res) => {
     const {
         name, category, description, city, province,
-        phone, email, website, logo, policeClearance, ownerEmail
+        phone, email, website, logo, policeClearance, address, businessHours, ownerEmail
     } = req.body;
 
     if (!name || !category || !description || !city || !province || !phone) {
@@ -21,8 +21,10 @@ router.post('/businesses', async (req, res) => {
         city,
         province,
         phone,
-        email,
-        website,
+        email: email || '',
+        website: website || '',
+        address: address || '',
+        businessHours: businessHours || {},
         ownerEmail: ownerEmail || email, // Link business to user's email
         logo: logo ? logo : null,
         policeClearance: policeClearance ? 'Doc Uploaded' : 'No Doc',
