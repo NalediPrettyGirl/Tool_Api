@@ -3,54 +3,40 @@ const router = express.Router();
 const { db } = require('../database');
 
 // Registration Endpoint
-// POST /api/register
-router.post('/register', async (req, res) => {
+// Supporting both /api/register and /api/auth/register
+const handleRegister = async (req, res) => {
     const { firstName, lastName, email, password } = req.body;
 
-    // Simple validation
     if (!email || !password || !firstName || !lastName) {
         return res.status(400).json({ message: 'All fields are required' });
     }
 
     try {
-        // Check if user already exists
         const userSnapshot = await db.collection('users').where('email', '==', email).get();
         if (!userSnapshot.empty) {
             return res.status(409).json({ message: 'User already exists' });
         }
 
-        // Create new user
-        const newUser = { firstName, lastName, email, password }; // In production, hash the password!
+        const newUser = { firstName, lastName, email, password }; 
         const docRef = await db.collection('users').add(newUser);
 
+        const userSession = { id: docRef.id, firstName, email };
+        req.session.user = userSession;
+
         console.log('User registered with ID:', docRef.id);
-        res.status(201).json({ message: 'Registration successful', userId: docRef.id });
+        res.status(201).json({ message: 'Registration successful', userId: docRef.id, user: userSession });
     } catch (error) {
         console.error('Error registering user:', error);
         res.status(500).json({ message: 'Error registering user' });
     }
-});
+};
 
-// Get All Users Endpoint
-// GET /api/users
-router.get('/users', async (req, res) => {
-    try {
-        const snapshot = await db.collection('users').get();
-        const users = snapshot.docs.map(doc => {
-            const data = doc.data();
-            delete data.password; // Don't send passwords back!
-            return { id: doc.id, ...data };
-        });
-        res.status(200).json(users);
-    } catch (error) {
-        console.error('Error fetching users:', error);
-        res.status(500).json({ message: 'Error fetching users' });
-    }
-});
+router.post('/register', handleRegister);
+router.post('/auth/register', handleRegister);
 
 // Login Endpoint
-// POST /api/login
-router.post('/login', async (req, res) => {
+// Supporting both /api/login and /api/auth/login
+const handleLogin = async (req, res) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
@@ -60,7 +46,7 @@ router.post('/login', async (req, res) => {
     try {
         const userSnapshot = await db.collection('users')
             .where('email', '==', email)
-            .where('password', '==', password) // In production, compare hashed passwords
+            .where('password', '==', password)
             .get();
 
         if (!userSnapshot.empty) {
@@ -83,7 +69,10 @@ router.post('/login', async (req, res) => {
         console.error('Error logging in:', error);
         res.status(500).json({ message: 'Error logging in' });
     }
-});
+};
+
+router.post('/login', handleLogin);
+router.post('/auth/login', handleLogin);
 
 // Get current authenticated user
 // GET /api/auth/me
