@@ -3,10 +3,12 @@ const admin = require('firebase-admin');
 // Load service account key from environment variable or local file
 let serviceAccount;
 try {
-    if (process.env.FIREBASE_SERVICE_ACCOUNT_KEY) {
+    if (process.env.FIREBASE_SERVICE_ACCOUNT) {
+        serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+    } else if (process.env.FIREBASE_SERVICE_ACCOUNT_KEY) {
         serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT_KEY);
     } else {
-        serviceAccount = require("./serviceAccountKey.json");
+        serviceAccount = require("./seviceaccountkey.json");
     }
 } catch (error) {
     console.error("Error loading service account key:", error.message);
