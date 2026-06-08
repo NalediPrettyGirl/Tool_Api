@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { db } = require('../database');
+const bcrypt = require('bcryptjs');
 
 // Registration Endpoint - BOTH /api/register and /api/auth/register
 // POST /api/register or /api/auth/register
@@ -20,7 +21,8 @@ router.post('/register', async (req, res) => {
         }
 
         // Create new user
-        const newUser = { firstName, lastName, email, password, theme: 'light' }; // In production, hash the password!
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const newUser = { firstName, lastName, email, password: hashedPassword, theme: 'light' };
         const docRef = await db.collection('users').add(newUser);
 
         const userSession = { id: docRef.id, firstName, email };
@@ -50,7 +52,8 @@ router.post('/auth/register', async (req, res) => {
         }
 
         // Create new user
-        const newUser = { firstName, lastName, email, password, theme: 'light' }; // In production, hash the password!
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const newUser = { firstName, lastName, email, password: hashedPassword, theme: 'light' };
         const docRef = await db.collection('users').add(newUser);
 
         const userSession = { id: docRef.id, firstName, email };
@@ -93,15 +96,27 @@ router.post('/login', async (req, res) => {
     try {
         const userSnapshot = await db.collection('users')
             .where('email', '==', email)
-            .where('password', '==', password) // In production, compare hashed passwords
             .get();
 
         if (!userSnapshot.empty) {
             const userDoc = userSnapshot.docs[0];
             const user = userDoc.data();
-            req.session.user = { id: userDoc.id, firstName: user.firstName, email: user.email };
-            console.log('User logged in:', user);
-            res.status(200).json({ message: 'Login successful', user: req.session.user });
+            
+            // For backward compatibility: check if it's already hashed, or if it matches raw text
+            let isMatch = false;
+            if (user.password && user.password.startsWith('$2a$')) {
+                isMatch = await bcrypt.compare(password, user.password);
+            } else {
+                isMatch = (password === user.password);
+            }
+
+            if (isMatch) {
+                req.session.user = { id: userDoc.id, firstName: user.firstName, email: user.email };
+                console.log('User logged in:', user);
+                res.status(200).json({ message: 'Login successful', user: req.session.user });
+            } else {
+                res.status(401).json({ message: 'Invalid credentials' });
+            }
         } else {
             res.status(401).json({ message: 'Invalid credentials' });
         }
@@ -121,15 +136,27 @@ router.post('/auth/login', async (req, res) => {
     try {
         const userSnapshot = await db.collection('users')
             .where('email', '==', email)
-            .where('password', '==', password) // In production, compare hashed passwords
             .get();
 
         if (!userSnapshot.empty) {
             const userDoc = userSnapshot.docs[0];
             const user = userDoc.data();
-            req.session.user = { id: userDoc.id, firstName: user.firstName, email: user.email };
-            console.log('User logged in:', user);
-            res.status(200).json({ message: 'Login successful', isLoggedIn: true, user: req.session.user });
+            
+            // For backward compatibility: check if it's already hashed, or if it matches raw text
+            let isMatch = false;
+            if (user.password && user.password.startsWith('$2a$')) {
+                isMatch = await bcrypt.compare(password, user.password);
+            } else {
+                isMatch = (password === user.password);
+            }
+
+            if (isMatch) {
+                req.session.user = { id: userDoc.id, firstName: user.firstName, email: user.email };
+                console.log('User logged in:', user);
+                res.status(200).json({ message: 'Login successful', isLoggedIn: true, user: req.session.user });
+            } else {
+                res.status(401).json({ message: 'Invalid credentials' });
+            }
         } else {
             res.status(401).json({ message: 'Invalid credentials' });
         }

@@ -55,6 +55,29 @@ router.get('/businesses', async (req, res) => {
     }
 });
 
+// Get Trending Businesses Endpoint
+// GET /api/businesses/trending
+router.get('/businesses/trending', async (req, res) => {
+    try {
+        let snapshot = await db.collection('businesses')
+            .where('status', '==', 'approved')
+            .limit(6)
+            .get();
+
+        if (snapshot.empty) {
+            snapshot = await db.collection('businesses')
+                .limit(6)
+                .get();
+        }
+
+        const businesses = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        res.status(200).json(businesses);
+    } catch (error) {
+        console.error('Error fetching trending businesses:', error);
+        res.status(500).json({ message: 'Error fetching trending businesses' });
+    }
+});
+
 // Check if user has a business
 // GET /api/businesses/check/:email
 router.get('/businesses/check/:email', async (req, res) => {

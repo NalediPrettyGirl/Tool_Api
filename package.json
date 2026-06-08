@@ -8,6 +8,7 @@
         "dev": "nodemon api.js"
     },
     "dependencies": {
+        "bcryptjs": "^3.0.3",
         "cookie-parser": "^1.4.7",
         "cors": "^2.8.5",
         "express": "^5.2.1",
