@@ -111,7 +111,7 @@ router.post('/login', async (req, res) => {
             }
 
             if (isMatch) {
-                req.session.user = { id: userDoc.id, firstName: user.firstName, email: user.email };
+                req.session.user = { id: userDoc.id, firstName: user.firstName, email: user.email, role: user.role || (user.email === 'admin@asera.com' ? 'admin' : 'user') };
                 console.log('User logged in:', user);
                 res.status(200).json({ message: 'Login successful', user: req.session.user });
             } else {
@@ -151,7 +151,7 @@ router.post('/auth/login', async (req, res) => {
             }
 
             if (isMatch) {
-                req.session.user = { id: userDoc.id, firstName: user.firstName, email: user.email };
+                req.session.user = { id: userDoc.id, firstName: user.firstName, email: user.email, role: user.role || (user.email === 'admin@asera.com' ? 'admin' : 'user') };
                 console.log('User logged in:', user);
                 res.status(200).json({ message: 'Login successful', isLoggedIn: true, user: req.session.user });
             } else {
