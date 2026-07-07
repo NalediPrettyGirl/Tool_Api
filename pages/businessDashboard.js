@@ -157,10 +157,14 @@ router.get('/stats/:businessId', async (req, res) => {
             .where('businessId', '==', businessId)
             .get();
 
+        // Get business document to get actual views and leads
+        const businessDoc = await db.collection('businesses').doc(businessId).get();
+        const businessData = businessDoc.exists ? businessDoc.data() : {};
+
         const stats = {
             totalProducts: productsSnapshot.size,
-            profileViews: Math.floor(Math.random() * 2000) + 500, // Mock data for now
-            customerLeads: Math.floor(Math.random() * 50) + 10, // Mock data for now
+            profileViews: businessData.profileViews || 0,
+            customerLeads: businessData.customerLeads || 0,
             activeProducts: productsSnapshot.docs.filter(doc => doc.data().status === 'active').length
         };
 

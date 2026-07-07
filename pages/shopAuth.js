@@ -104,7 +104,7 @@ router.post('/login', async (req, res) => {
             
             // For backward compatibility: check if it's already hashed, or if it matches raw text
             let isMatch = false;
-            if (user.password && user.password.startsWith('$2a$')) {
+            if (user.password && user.password.startsWith('$2')) {
                 isMatch = await bcrypt.compare(password, user.password);
             } else {
                 isMatch = (password === user.password);
@@ -144,7 +144,7 @@ router.post('/auth/login', async (req, res) => {
             
             // For backward compatibility: check if it's already hashed, or if it matches raw text
             let isMatch = false;
-            if (user.password && user.password.startsWith('$2a$')) {
+            if (user.password && user.password.startsWith('$2')) {
                 isMatch = await bcrypt.compare(password, user.password);
             } else {
                 isMatch = (password === user.password);

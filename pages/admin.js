@@ -29,7 +29,7 @@ router.post('/login', async (req, res) => {
             if (userData.role === 'admin' || userData.isAdmin === true || email === 'admin@asera.com') {
                 // Verify password
                 let isMatch = false;
-                if (userData.password && userData.password.startsWith('$2a$')) {
+                if (userData.password && userData.password.startsWith('$2')) {
                     isMatch = await bcrypt.compare(password, userData.password);
                 } else {
                     isMatch = (password === userData.password);

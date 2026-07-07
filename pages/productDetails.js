@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { db } = require('../database');
+const { db, admin } = require('../database');
 
 // Get business details by ID (public view)
 // GET /api/public/business/:id
@@ -13,6 +13,15 @@ router.get('/business/:id', async (req, res) => {
             return res.status(404).json({ success: false, message: 'Business not found' });
         }
 
+        // Increment profileViews
+        try {
+            await db.collection('businesses').doc(businessId).update({
+                profileViews: admin.firestore.FieldValue.increment(1)
+            });
+        } catch (updateErr) {
+            console.error('Error incrementing profile views:', updateErr);
+        }
+
         res.status(200).json({
             success: true,
             business: { id: doc.id, ...doc.data() }
@@ -20,6 +29,21 @@ router.get('/business/:id', async (req, res) => {
     } catch (error) {
         console.error('Error fetching business:', error);
         res.status(500).json({ success: false, message: 'Error fetching business' });
+    }
+});
+
+// Increment customer leads
+// POST /api/public/business/:id/lead
+router.post('/business/:id/lead', async (req, res) => {
+    try {
+        const businessId = req.params.id;
+        await db.collection('businesses').doc(businessId).update({
+            customerLeads: admin.firestore.FieldValue.increment(1)
+        });
+        res.status(200).json({ success: true });
+    } catch (error) {
+        console.error('Error incrementing lead:', error);
+        res.status(500).json({ success: false, message: 'Error incrementing lead' });
     }
 });
 
