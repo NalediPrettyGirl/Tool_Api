@@ -58,7 +58,6 @@ router.get('/products/:businessId', async (req, res) => {
         const businessId = req.params.businessId;
         const snapshot = await db.collection('products')
             .where('businessId', '==', businessId)
-            .orderBy('createdAt', 'desc')
             .get();
 
         const products = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
