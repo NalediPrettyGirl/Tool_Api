@@ -1,0 +1,1 @@
+The Tool_API is the central backend service powering the Asera web and admin platforms. Built with Node.js, Express, and Firebase, it provides secure endpoints for user authentication, business registration workflows, product management, and admin verification processes.
